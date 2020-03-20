@@ -10,11 +10,11 @@ world = World()
 
 
 # You may uncomment the smaller graphs for development and testing purposes.
-map_file = "maps/test_line.txt"
+# map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -71,16 +71,16 @@ while len(explored) < len(room_graph):
     # get room id
 
     current_room = player.current_room.id
-    print(current_room)
-    # print(explored.get(current_room) )
+    
+    # get exits of new(current) room
+    current_exits = player.current_room.get_exits()
 
     # check if room id is in keys of dictionary
     # if it is not:
     if explored.get(current_room)  is None:
         # add entry for room
         explored[current_room] = {}
-        # get exits of new(current) room
-        current_exits = player.current_room.get_exits()
+        
         #for each exit add a '?':
         for dir in current_exits:
             explored[current_room][dir] = '?'
@@ -101,8 +101,8 @@ while len(explored) < len(room_graph):
         # add last room as current room, opposite direction
         explored[current_room][opp_move] = path_back[-1]
 
-
-    print(explored)
+    print(f"in room {current_room}, exits: {current_exits} - visited {len(room_graph)} rooms")
+    # print(explored)
     
    
     # if any directions for current room are '?'
@@ -111,10 +111,11 @@ while len(explored) < len(room_graph):
         #store direction to move in traversal path
         #travel to unexplored room
     if '?' in explored[current_room].values():
-        for dir in ['w', 'n', 'e', 's']:
-            print(dir)
-            print(explored[current_room].get(dir))
+        for dir in current_exits:
+            # print(dir)
+            # print(explored[current_room].get(dir))
             if explored[current_room].get(dir) is not None and explored[current_room][dir] == '?':
+                print(f"moving {dir} to unexplored")
                 path_back.append(current_room)
                 traversal_path.append(dir)
                 player.travel(dir)
@@ -122,22 +123,21 @@ while len(explored) < len(room_graph):
 
 
     # if all exits explored:
-        # check to see if complete - save a move if we are
         # if last room id on path is this room id, delete it
         # find last room on path among directions
         # add direction to traversal path
-    elif len(explored) < len(room_graph):
+    # elif len(explored) < len(room_graph):
+    else:
         print(path_back, current_room)
         if path_back[-1] == current_room:
-            path_back[-1]
-        for dir in ['n', 'e', 's', 'w']:
+            del path_back[-1]
+        for dir in current_exits:
             print(dir)
             if explored[current_room].get(dir) is not None and explored[current_room][dir] == path_back[-1]:
                 traversal_path.append(dir)
                 player.travel(dir)
                 break
 
-    print(traversal_path)
     
         
 
@@ -156,7 +156,9 @@ while len(explored) < len(room_graph):
 
 # TRAVERSAL TEST
 visited_rooms = set()
-player.current_room = world.starting_roomse
+player.current_room = world.starting_room
+visited_rooms.add(player.current_room)
+
 for move in traversal_path:
     player.travel(move)
     visited_rooms.add(player.current_room)
