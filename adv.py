@@ -92,8 +92,8 @@ while len(explored) < len(room_graph):
     # get direction of last move from traversal path
     last_move =  traversal_path[-1]
     opp_move = opp_dirs[last_move]
-    print(last_move)
-    print(opp_move)
+    # print(last_move)
+    # print(opp_move)
     # if directions for previous not filled in:
     if explored[current_room][opp_move] == '?':
         # add current room as last room, direction moved
@@ -101,7 +101,7 @@ while len(explored) < len(room_graph):
         # add last room as current room, opposite direction
         explored[current_room][opp_move] = path_back[-1]
 
-    print(f"in room {current_room}, exits: {current_exits} - visited {len(room_graph)} rooms")
+    print(f"in room {current_room}, exits: {current_exits} - visited {len(explored)} rooms")
     # print(explored)
     
    
@@ -126,14 +126,13 @@ while len(explored) < len(room_graph):
         # if last room id on path is this room id, delete it
         # find last room on path among directions
         # add direction to traversal path
-    # elif len(explored) < len(room_graph):
-    else:
-        print(path_back, current_room)
+    elif len(explored) < len(room_graph):
+        # print(path_back, current_room)
         if path_back[-1] == current_room:
             del path_back[-1]
         for dir in current_exits:
-            print(dir)
             if explored[current_room].get(dir) is not None and explored[current_room][dir] == path_back[-1]:
+                print(f"moving back {dir} to room {path_back[-1]}")
                 traversal_path.append(dir)
                 player.travel(dir)
                 break
