@@ -51,8 +51,8 @@ for dir in current_exits:
 
 path_back.append(current_room)
 
-print(current_room)
-print(explored)
+print(f"starting room: {current_room}")
+# print(explored)
 
 # travel to first unexplored room
 for dir in ['n', 'e', 's', 'w']:
@@ -101,12 +101,12 @@ while len(explored) < len(room_graph):
         # add last room as current room, opposite direction
         explored[current_room][opp_move] = path_back[-1]
 
-    print(f"in room {current_room}, exits: {current_exits} - visited {len(explored)} rooms")
+    # print(f"in room {current_room}, exits: {current_exits} - visited {len(explored)} rooms")
     # print(explored)
     
    
     # if any directions for current room are '?'
-    # in order N, E, S, W:
+    # for each exit: 
         #add current room id to path
         #store direction to move in traversal path
         #travel to unexplored room
@@ -115,7 +115,7 @@ while len(explored) < len(room_graph):
             # print(dir)
             # print(explored[current_room].get(dir))
             if explored[current_room].get(dir) is not None and explored[current_room][dir] == '?':
-                print(f"moving {dir} to unexplored")
+                # print(f"moving {dir} to unexplored")
                 path_back.append(current_room)
                 traversal_path.append(dir)
                 player.travel(dir)
@@ -132,11 +132,13 @@ while len(explored) < len(room_graph):
             del path_back[-1]
         for dir in current_exits:
             if explored[current_room].get(dir) is not None and explored[current_room][dir] == path_back[-1]:
-                print(f"moving back {dir} to room {path_back[-1]}")
+                # print(f"moving back {dir} to room {path_back[-1]}")
                 traversal_path.append(dir)
                 player.travel(dir)
                 break
 
+    else:
+        print(traversal_path)
     
         
 
